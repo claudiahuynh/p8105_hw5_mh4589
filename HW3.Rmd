@@ -1,0 +1,79 @@
+---
+title: "Homework 5"
+author: "My An Huynh"
+date: "2024-11-05"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+```{r}
+sim_data = 
+  tibble(
+    x = rnorm(n = 30, mean = mu, sd = 5)
+  ) 
+
+mu_hat = 
+  sim_data |> 
+  mutate(
+    mu_hat = mean(x)
+  ) |> 
+  pull(mu_hat)
+
+result = 
+  t.test(x, mu = 0, alternative = "two.sided", conf.level = 0.95) |> 
+  broom::tidy() |> 
+  mutate(
+    mu_hat = mu_hat, 
+    reject_null = ifelse(p.value < 0.05, 1, 0)
+  ) |> 
+  select(mu_hat, p.value, reject_null)
+```
+
+Create a function for x 
+```{r}
+sim_function = function(mu) {
+sim_data = 
+  tibble(
+    x = rnorm(n = 30, mean = mu, sd = 5)
+  ) 
+
+mu_hat = 
+  sim_data |> 
+  mutate(
+    mu_hat = mean(x)
+  ) |> 
+  pull(mu_hat)
+
+result = 
+  t.test(x, mu = 0, alternative = "two.sided", conf.level = 0.95) |> 
+  broom::tidy() |> 
+  mutate(
+    mu_hat = mu_hat, 
+    reject_null = ifelse(p.value < 0.05, 1, 0)
+  ) |> 
+  select(mu_hat, p.value, reject_null)
+
+  return(result)
+  
+}
+
+sim_function(mu = 2)
+```
+
+Iterate this 5000 times
+
+```{r}
+sim_res = 
+  expand_grid(
+    mu = c(0,1,2,3,4,5,6),
+    i = 1:50
+  ) |> 
+  mutate(
+    samp_res = map(mu, sim_function)
+  ) |> 
+  unnest(samp_res)
+```
+
