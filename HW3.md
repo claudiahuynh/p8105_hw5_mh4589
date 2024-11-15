@@ -27,8 +27,6 @@ bday_sim(50)
 
     ## [1] TRUE
 
-run this a lot
-
 ``` r
 sim_res = 
   expand_grid(
@@ -45,6 +43,11 @@ sim_res |>
 ```
 
 ![](HW3_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+As the number of people in the room increases from 2 to 50, the
+probability of two people having the same birthday increases. We only
+need 22 - 23 people in the same room to have the probability of two
+people having the same birthday equal to 0.5.
 
 ## Problem 2
 
@@ -101,9 +104,9 @@ sim_function(true_mean = 2)
 ```
 
     ## # A tibble: 1 × 3
-    ##   mu_hat p.value reject_null
-    ##    <dbl>   <dbl>       <dbl>
-    ## 1   2.36  0.0301           1
+    ##   mu_hat  p.value reject_null
+    ##    <dbl>    <dbl>       <dbl>
+    ## 1   2.84 0.000904           1
 
 Iterate this 5000 times.
 
@@ -145,12 +148,14 @@ print(plot1)
 
 ![](HW3_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-As the true mean deviates more from the null, which states that the true
-mean equals 0, the power of the test increases. In other words, as
-effect size increases, the power of the test increases. This
-relationship is not linear but resembles the shape of a sigmoid curve.
-The power gradually increases for smaller effect sizes, and rapidly
-increases as effective size increases and plateaus when power reaches 1.
+As the true mean deviates more from the null hypothesis value of 0, the
+power of the test increases. In other words, as effect size increases,
+the probability of correctly rejecting the null hypothesis increases.
+This relationship is not linear but rather sigmoidal. The power
+gradually increases for smaller effect sizes (when true $\mu$ is closer
+to 0), and rapidly increases as effect size increases. As effect sizes
+become larger, the power approaches its maximum value of 1, and the
+curve plateaus.
 
 ``` r
 plot2 =
@@ -178,7 +183,7 @@ combined_plot =
   labs(
     title = "Average mu_hat and average mu_rejected against true mean",
     x = "True Mean", 
-    y = "Average mu_hat (red) / Average mu_rejected (blue)"
+    y = "Average mu_hat (red) & Average mu_rejected (blue)"
   )
 
 print(combined_plot)
@@ -186,7 +191,17 @@ print(combined_plot)
 
 ![](HW3_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-Based on simulation data,
+The sample average $\hat{\mu}_{\text{rejected}}$ for tests in which the
+null hypothesis is rejected is approximately equal to the true mean
+$\mu$ when $\mu$ is sufficiently different from the null value (e.g.,
+$\hat{\mu}_{\text{rejected}} = 3, 4, 5, 6$). When
+$\hat{\mu}_{\text{rejected}}$ equals 0, 1 and 2, the observed sample
+mean is closer to the null hypothesis value, leading to the failure to
+reject the null. This finding is consistent with the power of the test,
+in that when $\mu$ deviates more from the null value of 0, the test is
+more likely to reject the null, and the sample mean
+$\hat{\mu}_{\text{rejected}}$ is a better approximation of the true mean
+$\mu$.
 
 ## Problem 3
 
@@ -196,7 +211,13 @@ observations and spans from 2010 to 2017. The important variables are
 `uid` (victim unique identifier), `reported_date` starting from 2010 to
 2017, `victim_race`, `victim_age`, `victim_sex`, `lat` & `lon` (location
 latitude and longitude), `disposition` - “Closed without arrest”,
-“Closed barrest”, and “Open/No arrest”, `city` and `state`.
+“Closed by arrest”, and “Open/No arrest”, `city` and `state`. This
+problem focuses on looking at the proportion of unsolved homicides,
+which are categorized as “Closed without arrest” and “Open/No arrest” in
+the dataset. This is crucial for understanding patterns of unsolved
+murders, identifying areas with low arrest rates, and examining the
+social, economic, and systemic factors that contribute to police
+impunity and community distrust.
 
 After inspecting the raw data, I noticed that “Tulsa, AL” is supposed to
 be “Tulsa, OK”. This has been recoded in the data cleaning step.
@@ -239,7 +260,7 @@ baltimore_prop =
   select(estimate, conf.low, conf.high)
 ```
 
-Do this for every city
+Do this for every city.
 
 ``` r
  homicide_summary = 
@@ -270,7 +291,7 @@ prop_results =
 ```
 
 Make a plot showing the estimated proportion of unsolved homicides with
-error bars
+error bars.
 
 ``` r
 homicide_plot = 

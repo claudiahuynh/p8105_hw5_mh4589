@@ -7,6 +7,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+set.seed(1)
 ```
 ## Problem 1
 ## Birthday problem 
@@ -27,7 +28,6 @@ bday_sim(50)
 ```
 
 
-run this a lot 
 ```{r}
 sim_res = 
   expand_grid(
@@ -44,6 +44,7 @@ sim_res |>
 
 ```
 
+As the number of people in the room increases from 2 to 50, the probability of two people having the same birthday increases. We only need 22 - 23 people in the same room to have the probability of two people having the same birthday equal to 0.5. 
 
 ## Problem 2
 
@@ -134,7 +135,7 @@ plot1 =
 print(plot1)
 ```
 
-As the true mean deviates more from the null, which states that the true mean equals 0, the power of the test increases. In other words, as effect size increases, the power of the test increases. This relationship is not linear but resembles the shape of a sigmoid curve. The power gradually increases for smaller effect sizes, and rapidly increases as effective size increases and plateaus when power reaches 1. 
+As the true mean deviates more from the null hypothesis value of 0, the power of the test increases. In other words, as effect size increases, the probability of correctly rejecting the null hypothesis increases. This relationship is not linear but rather sigmoidal. The power gradually increases for smaller effect sizes (when true \( \mu \) is closer to 0), and rapidly increases as effect size increases. As effect sizes become larger, the power approaches its maximum value of 1, and the curve plateaus.
 
 ```{r}
 plot2 =
@@ -162,16 +163,17 @@ combined_plot =
   labs(
     title = "Average mu_hat and average mu_rejected against true mean",
     x = "True Mean", 
-    y = "Average mu_hat (red) / Average mu_rejected (blue)"
+    y = "Average mu_hat (red) & Average mu_rejected (blue)"
   )
 
 print(combined_plot)
 ```
 
-Based on simulation data, 
+The sample average \( \hat{\mu}_{\text{rejected}} \) for tests in which the null hypothesis is rejected is approximately equal to the true mean \( \mu \) when \( \mu \) is sufficiently different from the null value (e.g., \( \hat{\mu}_{\text{rejected}} = 3, 4, 5, 6 \)). When \( \hat{\mu}_{\text{rejected}} \) equals 0, 1 and 2, the observed sample mean is closer to the null hypothesis value, leading to the failure to reject the null. This finding is consistent with the power of the test, in that when \( \mu \) deviates more from the null value of 0, the test is more likely to reject the null, and the sample mean \( \hat{\mu}_{\text{rejected}} \) is a better approximation of the true mean \( \mu \).
+
 
 ## Problem 3
-The homicide data provides data on number of homicides, in 50 large cities in the U.S. The dataset contains 11 variables and 52179 observations and spans from 2010 to 2017. The important variables are `uid` (victim unique identifier), `reported_date` starting from 2010 to 2017, `victim_race`, `victim_age`, `victim_sex`, `lat` & `lon` (location latitude and longitude), `disposition` - "Closed without arrest", "Closed barrest", and "Open/No arrest", `city` and `state`. 
+The homicide data provides data on number of homicides, in 50 large cities in the U.S. The dataset contains 11 variables and 52179 observations and spans from 2010 to 2017. The important variables are `uid` (victim unique identifier), `reported_date` starting from 2010 to 2017, `victim_race`, `victim_age`, `victim_sex`, `lat` & `lon` (location latitude and longitude), `disposition` - "Closed without arrest", "Closed by arrest", and "Open/No arrest", `city` and `state`. This problem focuses on looking at the proportion of unsolved homicides, which are categorized as "Closed without arrest" and "Open/No arrest" in the dataset. This is crucial for understanding patterns of unsolved murders, identifying areas with low arrest rates, and examining the social, economic, and systemic factors that contribute to police impunity and community distrust.
 
 After inspecting the raw data, I noticed that "Tulsa, AL" is supposed to be "Tulsa, OK". This has been recoded in the data cleaning step.
 
@@ -203,7 +205,7 @@ baltimore_prop =
   select(estimate, conf.low, conf.high)
 ```
 
-Do this for every city 
+Do this for every city.
 
 ```{r}
  homicide_summary = 
@@ -233,7 +235,7 @@ prop_results =
   select(city_state, estimate, conf.low, conf.high)
 ```
 
-Make a plot showing the estimated proportion of unsolved homicides with error bars
+Make a plot showing the estimated proportion of unsolved homicides with error bars.
 
 ```{r}
 homicide_plot = 
